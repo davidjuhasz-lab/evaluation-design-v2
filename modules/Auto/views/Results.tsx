@@ -13,9 +13,10 @@ interface ResultsViewProps {
     setExpandedRow: (id: number | null) => void;
     setViewState: (view: AutoState) => void;
     onSwitchToManual: (module: ManualModule) => void;
+    onBackToHistory?: () => void;
 }
 
-export const ResultsView: React.FC<ResultsViewProps> = ({ selectedSubType, selectedAgentId, expandedRow, setExpandedRow, setViewState, onSwitchToManual }) => {
+export const ResultsView: React.FC<ResultsViewProps> = ({ selectedSubType, selectedAgentId, expandedRow, setExpandedRow, setViewState, onSwitchToManual, onBackToHistory }) => {
     const results = selectedSubType.startsWith('docu') ? docuPipelineResults 
                  : [];
     
@@ -49,7 +50,7 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ selectedSubType, selec
               </div>
               <div className="flex gap-3">
                   <button className="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors border border-transparent hover:border-slate-200">Export Report</button>
-                  <PrimaryButton onClick={() => setViewState('list')}>Back to Dashboard</PrimaryButton>
+                  <PrimaryButton onClick={() => onBackToHistory ? onBackToHistory() : setViewState('list')}>Back to Dashboard</PrimaryButton>
               </div>
           </div>
 

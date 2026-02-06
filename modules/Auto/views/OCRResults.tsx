@@ -171,6 +171,7 @@ const mockOCRResults: OCRDocumentResult[] = [
 interface OCRResultsViewProps {
   setViewState: (view: AutoState) => void;
   hasGoldens?: boolean;
+  onBackToHistory?: () => void;
 }
 
 const getConfidenceColor = (confidence: number) => {
@@ -197,7 +198,7 @@ const getAccuracyIcon = (accuracy: number) => {
   return XCircle;
 };
 
-export const OCRResultsView: React.FC<OCRResultsViewProps> = ({ setViewState, hasGoldens = true }) => {
+export const OCRResultsView: React.FC<OCRResultsViewProps> = ({ setViewState, hasGoldens = true, onBackToHistory }) => {
   const [expandedDoc, setExpandedDoc] = useState<number>(0);
   
   // Calculate overall accuracy across all documents
@@ -228,7 +229,7 @@ export const OCRResultsView: React.FC<OCRResultsViewProps> = ({ setViewState, ha
           <button className="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors border border-slate-200 flex items-center gap-2">
             <Download size={16} /> Export Report
           </button>
-          <PrimaryButton onClick={() => setViewState('list')}>Back to Dashboard</PrimaryButton>
+          <PrimaryButton onClick={() => onBackToHistory ? onBackToHistory() : setViewState('list')}>Back to Dashboard</PrimaryButton>
         </div>
       </div>
 

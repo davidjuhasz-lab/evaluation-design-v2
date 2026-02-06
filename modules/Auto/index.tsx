@@ -235,6 +235,7 @@ export const AutoTestPanel: React.FC<AutoTestPanelProps> = ({
           <OCRResultsView 
             setViewState={setViewState}
             hasGoldens={true}
+            onBackToHistory={onBackToHistory}
           />
       )}
 
@@ -246,6 +247,7 @@ export const AutoTestPanel: React.FC<AutoTestPanelProps> = ({
             setExpandedRow={setExpandedRow}
             setViewState={setViewState}
             onSwitchToManual={onSwitchToManual}
+            onBackToHistory={onBackToHistory}
           />
       )}
     </div>
