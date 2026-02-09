@@ -1,11 +1,93 @@
 
 // Mock Data for Docu Pipeline
 export const docuPipelineFiles = [
-    { name: "Employment_Contract_J_Doe_2024.pdf", size: "2.4 MB", type: "application/pdf" },
-    { name: "Invoice_INV-2023-001_AcmeCorp.pdf", size: "145 KB", type: "application/pdf" },
-    { name: "ID_Card_Scan_Front_DriverLic.jpg", size: "3.2 MB", type: "image/jpeg" },
-    { name: "NDA_Confidential_Project_X.docx", size: "540 KB", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
-    { name: "Receipt_Coffee_Meeting_02_14.png", size: "1.1 MB", type: "image/png" }
+    { id: 'doc-1', name: "Employment_Contract_J_Doe_2024.pdf", size: "2.4 MB", type: "application/pdf" },
+    { id: 'doc-2', name: "Invoice_INV-2023-001_AcmeCorp.pdf", size: "145 KB", type: "application/pdf" },
+    { id: 'doc-3', name: "ID_Card_Scan_Front_DriverLic.jpg", size: "3.2 MB", type: "image/jpeg" },
+    { id: 'doc-4', name: "NDA_Confidential_Project_X.docx", size: "540 KB", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
+    { id: 'doc-5', name: "Receipt_Coffee_Meeting_02_14.png", size: "1.1 MB", type: "image/png" },
+    { id: 'doc-6', name: "Employment_Contract_J_Doe_2023.pdf", size: "2.1 MB", type: "application/pdf" },
+    { id: 'doc-7', name: "Invoice_INV-2023-002_AcmeCorp.pdf", size: "152 KB", type: "application/pdf" }
+];
+
+// Cross-check linked document pairs
+export interface LinkedDocumentPair {
+    id: string;
+    doc1: { id: string; name: string };
+    doc2: { id: string; name: string };
+    crossCheckType: 'version_compare' | 'reference_verify' | 'data_consistency';
+    description: string;
+}
+
+export const linkedDocumentPairs: LinkedDocumentPair[] = [
+    {
+        id: 'link-1',
+        doc1: { id: 'doc-1', name: 'Employment_Contract_J_Doe_2024.pdf' },
+        doc2: { id: 'doc-6', name: 'Employment_Contract_J_Doe_2023.pdf' },
+        crossCheckType: 'version_compare',
+        description: 'Compare contract versions for changes'
+    },
+    {
+        id: 'link-2',
+        doc1: { id: 'doc-2', name: 'Invoice_INV-2023-001_AcmeCorp.pdf' },
+        doc2: { id: 'doc-7', name: 'Invoice_INV-2023-002_AcmeCorp.pdf' },
+        crossCheckType: 'data_consistency',
+        description: 'Verify invoice data consistency'
+    }
+];
+
+// Cross-check evaluation results
+export interface CrossCheckResult {
+    linkId: string;
+    doc1Name: string;
+    doc2Name: string;
+    crossCheckType: 'version_compare' | 'reference_verify' | 'data_consistency';
+    status: 'pass' | 'fail' | 'warning';
+    overallScore: number;
+    findings: {
+        category: string;
+        status: 'match' | 'mismatch' | 'added' | 'removed';
+        doc1Value: string;
+        doc2Value: string;
+        severity: 'info' | 'warning' | 'critical';
+    }[];
+    summary: string;
+}
+
+export const crossCheckResults: CrossCheckResult[] = [
+    {
+        linkId: 'link-1',
+        doc1Name: 'Employment_Contract_J_Doe_2024.pdf',
+        doc2Name: 'Employment_Contract_J_Doe_2023.pdf',
+        crossCheckType: 'version_compare',
+        status: 'warning',
+        overallScore: 78,
+        findings: [
+            { category: 'Salary', status: 'mismatch', doc1Value: '$125,000', doc2Value: '$115,000', severity: 'info' },
+            { category: 'Job Title', status: 'mismatch', doc1Value: 'Senior Engineer', doc2Value: 'Engineer', severity: 'info' },
+            { category: 'Start Date', status: 'match', doc1Value: '2023-03-01', doc2Value: '2023-03-01', severity: 'info' },
+            { category: 'Benefits Package', status: 'mismatch', doc1Value: 'Premium Plan', doc2Value: 'Standard Plan', severity: 'warning' },
+            { category: 'Non-Compete Clause', status: 'added', doc1Value: '12 months', doc2Value: 'N/A', severity: 'critical' },
+            { category: 'Remote Work Policy', status: 'added', doc1Value: 'Hybrid (3 days office)', doc2Value: 'N/A', severity: 'info' }
+        ],
+        summary: '6 fields compared: 1 match, 3 changes, 2 additions. Notable: Non-compete clause added in 2024 version.'
+    },
+    {
+        linkId: 'link-2',
+        doc1Name: 'Invoice_INV-2023-001_AcmeCorp.pdf',
+        doc2Name: 'Invoice_INV-2023-002_AcmeCorp.pdf',
+        crossCheckType: 'data_consistency',
+        status: 'pass',
+        overallScore: 95,
+        findings: [
+            { category: 'Vendor Name', status: 'match', doc1Value: 'Acme Corporation', doc2Value: 'Acme Corporation', severity: 'info' },
+            { category: 'Vendor Address', status: 'match', doc1Value: '123 Business St, NY', doc2Value: '123 Business St, NY', severity: 'info' },
+            { category: 'Tax ID', status: 'match', doc1Value: '12-3456789', doc2Value: '12-3456789', severity: 'info' },
+            { category: 'Invoice Amount', status: 'mismatch', doc1Value: '$5,430.00', doc2Value: '$7,215.00', severity: 'info' },
+            { category: 'Payment Terms', status: 'match', doc1Value: 'Net 30', doc2Value: 'Net 30', severity: 'info' }
+        ],
+        summary: '5 fields compared: 4 consistent, 1 expected difference (amount). Vendor data verified consistent across invoices.'
+    }
 ];
 
 export const simulatedConversations = [

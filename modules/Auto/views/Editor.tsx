@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { Upload, Plus, Sliders, Download, Info, MoreHorizontal, Calendar, FileText, FileImage, Trash2, Tags, FileJson } from 'lucide-react';
+import { Upload, Plus, Sliders, Download, Info, MoreHorizontal, Calendar, FileText, FileImage, Trash2, Tags, FileJson, Link2, ArrowLeftRight, GitCompare, CheckCircle2, X } from 'lucide-react';
 import { TestSubType } from '../../../types';
-import { docuPipelineFiles } from '../data';
+import { docuPipelineFiles, linkedDocumentPairs } from '../data';
 
 interface EditorViewProps {
     selectedSubType: TestSubType;
@@ -85,6 +85,72 @@ export const EditorView: React.FC<EditorViewProps> = ({ selectedSubType }) => {
                            </table>
                        </div>
                     </div>
+
+                    {/* Cross-Check Document Links - Only for full pipeline */}
+                    {selectedSubType === 'docu-pipeline' && (
+                        <div>
+                            <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                                    <GitCompare size={14} />
+                                    Cross-Check Document Links ({linkedDocumentPairs.length})
+                                </h4>
+                                <button className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-medium transition-colors">
+                                    <Link2 size={14} />
+                                    Link Documents
+                                </button>
+                            </div>
+                            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                                {linkedDocumentPairs.length > 0 ? (
+                                    <div className="divide-y divide-slate-100">
+                                        {linkedDocumentPairs.map((link) => (
+                                            <div key={link.id} className="px-6 py-4 hover:bg-slate-50 transition-colors">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-4">
+                                                        {/* Doc 1 */}
+                                                        <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
+                                                            <FileText size={16} className="text-rose-500" />
+                                                            <span className="text-sm font-medium text-slate-700 max-w-[180px] truncate">{link.doc1.name}</span>
+                                                        </div>
+                                                        
+                                                        {/* Link indicator */}
+                                                        <div className="flex flex-col items-center">
+                                                            <ArrowLeftRight size={18} className="text-indigo-500" />
+                                                            <span className={`text-[10px] font-bold uppercase mt-1 px-2 py-0.5 rounded ${
+                                                                link.crossCheckType === 'version_compare' ? 'bg-purple-100 text-purple-700' :
+                                                                link.crossCheckType === 'reference_verify' ? 'bg-blue-100 text-blue-700' :
+                                                                'bg-amber-100 text-amber-700'
+                                                            }`}>
+                                                                {link.crossCheckType.replace('_', ' ')}
+                                                            </span>
+                                                        </div>
+                                                        
+                                                        {/* Doc 2 */}
+                                                        <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
+                                                            <FileText size={16} className="text-rose-500" />
+                                                            <span className="text-sm font-medium text-slate-700 max-w-[180px] truncate">{link.doc2.name}</span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-xs text-slate-500 max-w-[200px] truncate">{link.description}</span>
+                                                        <button className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded transition-colors">
+                                                            <X size={16} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="px-6 py-8 text-center">
+                                        <Link2 size={32} className="mx-auto text-slate-300 mb-3" />
+                                        <p className="text-sm text-slate-500">No documents linked for cross-checking</p>
+                                        <p className="text-xs text-slate-400 mt-1">Link documents to compare versions or verify data consistency</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                </div>
            ) : (
                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
